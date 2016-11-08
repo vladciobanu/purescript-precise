@@ -5,9 +5,9 @@
 
 This is a library for working with numbers of arbitrarily finite size.
 
-Javascript (and to some extension Purescript) has quite a few drawbacks when it comes to large numbers. For example, Purescript's `Int` primitive [is a member](https://github.com/purescript/purescript-prelude/blob/v0.1.3/src/Prelude.js#L177-L178) of the `Bounded` typeclass, with `top == 2 ^ 31 - 1` and `bottom == - (2 ^ 32)`.
+JavaScript (and to some extension PureScript) has quite a few drawbacks when it comes to large numbers. For example, PureScript's `Int` primitive [is a member](https://github.com/purescript/purescript-prelude/blob/v0.1.3/src/Prelude.js#L177-L178) of the `Bounded` typeclass, with `top == 2 ^ 31 - 1` and `bottom == - (2 ^ 32)`.
 
-The Purescript `Number` primitive is not `Bounded` in the same way; however, there are problems with manipulating large-enough `Number`s:
+The PureScript `Number` primitive is not `Bounded` in the same way; however, there are problems with manipulating large-enough `Number`s:
 
 ```
 > import Prelude
