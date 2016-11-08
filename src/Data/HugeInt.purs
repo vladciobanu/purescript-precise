@@ -22,7 +22,7 @@ import Data.String (length, drop, takeWhile)
 import Data.Int (toNumber)
 import Data.Int (round) as Int
 import Data.Maybe (Maybe(..))
-import Data.HugeNum (HugeNum())
+import Data.HugeNum (HugeNum)
 import Data.HugeNum as HN
 
 newtype HugeInt = HugeInt HugeNum
