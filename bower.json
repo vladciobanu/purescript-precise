@@ -1,9 +1,5 @@
 {
-  "name": "purescript-hugenums",
-  "version": "2.0.1",
-  "moduleType": [
-    "node"
-  ],
+  "name": "purescript-precise",
   "license": "MIT",
   "ignore": [
     "**/.*",
@@ -13,14 +9,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/Thimoteus/purescript-hugenums.git"
+    "url": "git://github.com/purescript-contrib/purescript-hugenums.git"
   },
   "dependencies": {
     "purescript-arrays": "^3.0.0",
-    "purescript-strings": "^2.0.2",
     "purescript-globals": "^2.0.0",
     "purescript-integers": "^2.0.0",
-    "purescript-quickcheck": "^3.0.0"
+    "purescript-quickcheck": "^3.0.0",
+    "purescript-strings": "^2.0.2"
   },
   "devDependencies": {
     "purescript-quickcheck-laws": "^2.0.0"

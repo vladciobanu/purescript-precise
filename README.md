@@ -1,4 +1,7 @@
-# purescript-hugenums [![Build Status](https://travis-ci.org/Thimoteus/purescript-hugenums.svg?branch=master)](https://travis-ci.org/Thimoteus/purescript-hugenums)
+# purescript-precise
+
+[![Latest release](http://img.shields.io/github/release/purescript-contrib/purescript-precise.svg)](https://github.com/purescript-contrib/purescript-precise/releases)
+[![Build status](https://travis-ci.org/purescript-contrib/purescript-precise.svg?branch=master)](https://travis-ci.org/purescript-contrib/purescript-precise)
 
 This is a library for working with numbers of arbitrarily finite size.
 
@@ -33,14 +36,12 @@ HugeNum 900000000000000001.0
 
 Addition is implemented using an elementary-school method. Multiplication follows [Karatsuba](https://en.wikipedia.org/wiki/Karatsuba_algorithm).
 
-## documentation
+## Installation
 
-Available on [pursuit](https://pursuit.purescript.org/packages/purescript-hugenums/).
+```
+bower install purescript-precise
+```
 
-## integers
+## Documentation
 
-There is also a newtype for integral values in `Data.HugeInt`.
-
-## installation
-
-`bower install purescript-hugenums`
+Module documentation is [published on Pursuit](https://pursuit.purescript.org/packages/purescript-precise/).
