@@ -21,22 +21,22 @@ module Data.HugeNum
   , truncate
   ) where
 
-import Prelude hiding (min, max)
-import Global (readFloat)
+import Prelude
 
-import Data.String (Pattern(..), toCharArray, contains, singleton)
-import Data.List (List(..), (:))
-import Data.List as L
-import Data.Unfoldable (replicate)
-import Data.Traversable (sequence)
+import Data.Digit (Digit, toInt, fromInt, fromChar, toChar, _zero, _one)
 import Data.Foldable (foldl, all, foldMap)
-import Data.Maybe (Maybe(..), fromJust)
 import Data.Int (odd)
 import Data.Int (round) as Int
-import Math as Math
+import Data.List (List(..), (:))
+import Data.List as L
+import Data.Maybe (Maybe(..), fromJust)
 import Data.Monoid (mempty)
+import Data.String (Pattern(..), toCharArray, contains, singleton)
+import Data.Traversable (sequence)
 import Data.Tuple (Tuple(..), fst, snd)
-import Data.Digit (Digit, toInt, fromInt, fromChar, toChar, _zero, _one)
+import Data.Unfoldable (replicate)
+import Global (readFloat)
+import Math as Math
 import Partial.Unsafe (unsafePartial)
 
 import Control.Monad.Eff.Exception.Unsafe (unsafeThrow)
