@@ -22,13 +22,12 @@ module Data.HugeNum
   ) where
 
 import Prelude
-
+import Data.List as L
+import Control.Monad.Eff.Exception.Unsafe (unsafeThrow)
 import Data.Digit (Digit, toInt, fromInt, fromChar, toChar, _zero, _one)
 import Data.Foldable (foldl, all, foldMap)
-import Data.Int (odd)
-import Data.Int (round) as Int
+import Data.Int (round, odd, toNumber) as Int
 import Data.List (List(..), (:))
-import Data.List as L
 import Data.Maybe (Maybe(..), fromJust)
 import Data.Monoid (mempty)
 import Data.String (Pattern(..), toCharArray, contains, singleton)
@@ -36,12 +35,9 @@ import Data.Traversable (sequence)
 import Data.Tuple (Tuple(..), fst, snd)
 import Data.Unfoldable (replicate)
 import Global (readFloat)
-import Math as Math
 import Partial.Unsafe (unsafePartial)
-
-import Control.Monad.Eff.Exception.Unsafe (unsafeThrow)
-
-import Test.QuickCheck.Arbitrary (class Arbitrary, arbitrary)
+import Test.QuickCheck.Arbitrary (class Arbitrary)
+import Test.QuickCheck.Gen (chooseInt)
 
 -- | ##Type definitions
 -- | Well-formed HugeNums are such that the decimal is a positive number less
@@ -56,7 +52,10 @@ newtype HugeNum = HugeNum HugeRec
 -- | ##Instances
 
 instance arbHugeNum :: Arbitrary HugeNum where
-  arbitrary = fromNumber <<< Math.round <<< (_ * 1000.0) <$> arbitrary
+  arbitrary = do
+    i <- Int.toNumber <$> chooseInt 0 1000
+    d <- Int.toNumber <$> chooseInt 0 10
+    pure $ fromNumber (i + d / 10.0)
 
 instance eqSign :: Eq Sign where
   eq Plus Plus = true
@@ -330,7 +329,7 @@ round h | abs (h - floor h) < abs (ceil h - h) = floor h
 -- | Returns the fractional part of a HugeNum.
 fractionalPart :: HugeNum -> HugeNum
 fractionalPart (HugeNum r) =
-  HugeNum (r { digits = _zero : L.drop r.decimal r.digits })
+  HugeNum (r { digits = _zero : L.drop r.decimal r.digits, decimal = 1 })
 
 -- | Creates a nonnegative value with the same magnitude as the argument.
 abs :: HugeNum -> HugeNum
@@ -376,7 +375,14 @@ addPlusPlus x y = dropZeroes (HugeNum z) where
   digits' = fst digits''
   digits = unsafeRemoveFrontZeroes $ spill : digits'
   decimal = adjustDecimalForFrontZeroes (spill : digits') (r1.decimal + 1)
-  z = { digits: digits, decimal: decimal, sign: Plus }
+  z = { digits: adjustDigitsForDecimal decimal digits, decimal: decimal, sign: Plus }
+
+adjustDigitsForDecimal :: Int -> List Digit -> List Digit
+adjustDigitsForDecimal decimal digits = go (decimal - L.length digits + 1) digits
+  where
+  go n ds
+    | n <= 0 = ds
+    | otherwise = go (n - 1) (_zero : ds)
 
 digitwiseAdd :: Tuple (List Digit) Digit -> Tuple Digit Digit -> Tuple (List Digit) Digit
 digitwiseAdd (Tuple xs d) (Tuple t b) =
@@ -502,6 +508,8 @@ times :: HugeNum -> HugeNum -> HugeNum
 times r1 r2
   | timesSign (_.sign $ rec r1) (_.sign $ rec r2) == Minus = neg (times (abs r1) (abs r2))
   | not (trivialFraction r1) || not (trivialFraction r2) =
+    -- Multiply without decimal points first, then move the decimal point to the
+    --   correct spot in the result. e.g. 1.1 * 2*2 === 11 * 22 / 100
     adjustDecimalForTriviality r1 r2 $ times (makeHugeInteger r1) (makeHugeInteger r2)
   | smallEnough r1 = multSmallNum r1 r2
   | smallEnough r2 = multSmallNum r2 r1
@@ -568,9 +576,9 @@ trivialFraction (HugeNum r) =
 -- | we first turn them into integral HugeNums, then calculate where the
 -- | decimal should be.
 adjustDecimalForTriviality :: HugeNum -> HugeNum -> HugeNum -> HugeNum
-adjustDecimalForTriviality h1 h2 (HugeNum r3) = HugeNum r where
+adjustDecimalForTriviality h1 h2 (HugeNum r3) = dropZeroes (HugeNum r) where
   digitsLength = L.length r3.digits - 1
-  digits' = L.take digitsLength r3.digits -- r3 is always an integer-like representation of h1 * h2
+  digits' = L.take digitsLength r3.digits
   decimalMod = meatyDecimals h1 + meatyDecimals h2
   digits = replicate (decimalMod - digitsLength + 1) _zero <> digits'
   decimal = L.length $ L.drop decimalMod $ L.reverse digits
@@ -584,7 +592,7 @@ pow r 1 = r
 pow r n =
   let c = r * r
       ans = pow c (n / 2)
-   in if odd n
+   in if Int.odd n
          then r * ans
          else ans
 
