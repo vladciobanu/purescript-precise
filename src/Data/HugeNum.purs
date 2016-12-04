@@ -51,8 +51,6 @@ newtype HugeNum = HugeNum HugeRec
 
 -- | ##Instances
 
---instance arbHugeNum :: Arbitrary HugeNum where
---  arbitrary = fromNumber <<< Math.round <<< (_ * 1000.0) <$> arbitrary
 instance arbHugeNum :: Arbitrary HugeNum where
   arbitrary = do
     i <- Int.toNumber <$> chooseInt 0 1000
@@ -331,7 +329,7 @@ round h | abs (h - floor h) < abs (ceil h - h) = floor h
 -- | Returns the fractional part of a HugeNum.
 fractionalPart :: HugeNum -> HugeNum
 fractionalPart (HugeNum r) =
-  HugeNum (r { digits = _zero : L.drop r.decimal r.digits })
+  HugeNum (r { digits = _zero : L.drop r.decimal r.digits, decimal = 1 })
 
 -- | Creates a nonnegative value with the same magnitude as the argument.
 abs :: HugeNum -> HugeNum
@@ -510,6 +508,8 @@ times :: HugeNum -> HugeNum -> HugeNum
 times r1 r2
   | timesSign (_.sign $ rec r1) (_.sign $ rec r2) == Minus = neg (times (abs r1) (abs r2))
   | not (trivialFraction r1) || not (trivialFraction r2) =
+    -- Multiply without decimal points first, then move the decimal point to the
+    --   correct spot in the result. e.g. 1.1 * 2*2 === 11 * 22 / 100
     adjustDecimalForTriviality r1 r2 $ times (makeHugeInteger r1) (makeHugeInteger r2)
   | smallEnough r1 = multSmallNum r1 r2
   | smallEnough r2 = multSmallNum r2 r1
@@ -576,9 +576,9 @@ trivialFraction (HugeNum r) =
 -- | we first turn them into integral HugeNums, then calculate where the
 -- | decimal should be.
 adjustDecimalForTriviality :: HugeNum -> HugeNum -> HugeNum -> HugeNum
-adjustDecimalForTriviality h1 h2 (HugeNum r3) = HugeNum r where
+adjustDecimalForTriviality h1 h2 (HugeNum r3) = dropZeroes (HugeNum r) where
   digitsLength = L.length r3.digits - 1
-  digits' = L.take digitsLength r3.digits -- r3 is always an integer-like representation of h1 * h2
+  digits' = L.take digitsLength r3.digits
   decimalMod = meatyDecimals h1 + meatyDecimals h2
   digits = replicate (decimalMod - digitsLength + 1) _zero <> digits'
   decimal = L.length $ L.drop decimalMod $ L.reverse digits
