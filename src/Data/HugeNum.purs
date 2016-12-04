@@ -26,6 +26,7 @@ import Data.List as L
 import Control.Monad.Eff.Exception.Unsafe (unsafeThrow)
 import Data.Digit (Digit, toInt, fromInt, fromChar, toChar, _zero, _one)
 import Data.Foldable (foldl, all, foldMap)
+import Data.Generic (class Generic)
 import Data.Int (round, odd, toNumber) as Int
 import Data.List (List(..), (:))
 import Data.Maybe (Maybe(..), fromJust)
@@ -47,9 +48,13 @@ import Test.QuickCheck.Gen (chooseInt)
 
 data Sign = Plus | Minus
 type HugeRec = { digits :: List Digit, decimal :: Int, sign :: Sign }
-newtype HugeNum = HugeNum HugeRec
+-- Can use type synonym when bug fixed: https://github.com/purescript/purescript/issues/1443
+newtype HugeNum = HugeNum { digits :: List Digit, decimal :: Int, sign :: Sign }
 
 -- | ##Instances
+
+derive instance genericSign :: Generic Sign
+derive instance genericHugeNum :: Generic HugeNum
 
 instance arbHugeNum :: Arbitrary HugeNum where
   arbitrary = do
