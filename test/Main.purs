@@ -1,11 +1,11 @@
 module Test.Main where
 
 import Prelude
-import Test.QuickCheck.Laws.Data.Eq
-import Test.QuickCheck.Laws.Data.Ord
-import Test.QuickCheck.Laws.Data.Semiring
-import Test.QuickCheck.Laws.Data.Ring
-import Data.HugeNum
+import Test.QuickCheck.Laws.Data.Eq (checkEq)
+import Test.QuickCheck.Laws.Data.Ord (checkOrd)
+import Test.QuickCheck.Laws.Data.Semiring (checkSemiring)
+import Test.QuickCheck.Laws.Data.Ring (checkRing)
+import Data.HugeNum (HugeNum)
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE, log)
 import Control.Monad.Eff.Exception (EXCEPTION)
@@ -19,7 +19,7 @@ main :: forall eff.
   Eff
     ( console :: CONSOLE
     , random :: RANDOM
-    , err :: EXCEPTION
+    , exception :: EXCEPTION
     | eff
     )
     Unit
