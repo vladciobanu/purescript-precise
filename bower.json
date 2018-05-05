@@ -12,14 +12,14 @@
     "url": "git://github.com/purescript-contrib/purescript-hugenums.git"
   },
   "dependencies": {
-    "purescript-arrays": "^4.0.0",
-    "purescript-globals": "^3.0.0",
-    "purescript-integers": "^3.0.0",
-    "purescript-quickcheck": "^4.0.0",
-    "purescript-generics": "^4.0.0",      
-    "purescript-strings": "^3.0.0"
+    "purescript-arrays": "#compiler/0.12",
+    "purescript-globals": "#compiler/0.12",
+    "purescript-integers": "#compiler/0.12",
+    "purescript-quickcheck": "#compiler/0.12",
+    "purescript-generics-rep": "#compiler/0.12",
+    "purescript-strings": "#compiler/0.12"
   },
   "devDependencies": {
-    "purescript-quickcheck-laws": "^3.0.0"
+    "purescript-quickcheck-laws": "#compiler/0.12"
   }
 }

@@ -22,19 +22,19 @@ module Data.HugeNum
   ) where
 
 import Prelude
-import Data.List as L
-import Control.Monad.Eff.Exception.Unsafe (unsafeThrow)
+
 import Data.Digit (Digit, toInt, fromInt, fromChar, toChar, _zero, _one)
 import Data.Foldable (foldl, all, foldMap)
-import Data.Generic (class Generic)
+import Data.Generic.Rep (class Generic)
 import Data.Int (round, odd, toNumber) as Int
 import Data.List (List(..), (:))
+import Data.List as L
 import Data.Maybe (Maybe(..), fromJust)
-import Data.Monoid (mempty)
 import Data.String (Pattern(..), toCharArray, contains, singleton)
 import Data.Traversable (sequence)
 import Data.Tuple (Tuple(..), fst, snd)
 import Data.Unfoldable (replicate)
+import Effect.Exception.Unsafe (unsafeThrow)
 import Global (readFloat)
 import Partial.Unsafe (unsafePartial)
 import Test.QuickCheck.Arbitrary (class Arbitrary)
@@ -53,8 +53,8 @@ newtype HugeNum = HugeNum { digits :: List Digit, decimal :: Int, sign :: Sign }
 
 -- | ##Instances
 
-derive instance genericSign :: Generic Sign
-derive instance genericHugeNum :: Generic HugeNum
+derive instance genericSign :: Generic Sign _
+derive instance genericHugeNum :: Generic HugeNum _
 
 instance arbHugeNum :: Arbitrary HugeNum where
   arbitrary = do
