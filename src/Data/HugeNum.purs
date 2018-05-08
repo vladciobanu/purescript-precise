@@ -25,7 +25,6 @@ import Prelude
 
 import Data.Digit (Digit, toInt, fromInt, fromChar, toChar, _zero, _one)
 import Data.Foldable (foldl, all, foldMap)
-import Data.Generic.Rep (class Generic)
 import Data.Int (round, odd, toNumber) as Int
 import Data.List (List(..), (:))
 import Data.List as L
@@ -52,9 +51,6 @@ type HugeRec = { digits :: List Digit, decimal :: Int, sign :: Sign }
 newtype HugeNum = HugeNum { digits :: List Digit, decimal :: Int, sign :: Sign }
 
 -- | ##Instances
-
-derive instance genericSign :: Generic Sign _
-derive instance genericHugeNum :: Generic HugeNum _
 
 instance arbHugeNum :: Arbitrary HugeNum where
   arbitrary = do

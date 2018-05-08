@@ -7,12 +7,9 @@ module Data.Digit
 
 import Prelude
 import Data.Char (toCharCode, fromCharCode)
-import Data.Generic.Rep (class Generic)
 import Data.Maybe (Maybe(..))
 
 newtype Digit = Digit Int
-
-derive instance genericDigit :: Generic Digit _
 
 instance showDigit :: Show Digit where
   show (Digit n) = "Digit " <> show n

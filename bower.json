@@ -16,7 +16,6 @@
     "purescript-globals": "#compiler/0.12",
     "purescript-integers": "#compiler/0.12",
     "purescript-quickcheck": "#compiler/0.12",
-    "purescript-generics-rep": "#compiler/0.12",
     "purescript-strings": "#compiler/0.12"
   },
   "devDependencies": {
