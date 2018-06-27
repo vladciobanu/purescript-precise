@@ -7,12 +7,13 @@ module Data.Digit
 
 import Prelude
 import Data.Char (toCharCode, fromCharCode)
-import Data.Generic (class Generic)
-import Data.Maybe (Maybe(..))
+import Data.Generic.Rep (class Generic)
+import Data.Maybe (Maybe(..), fromJust)
+import Partial.Unsafe (unsafePartial)
 
 newtype Digit = Digit Int
 
-derive instance genericDigit :: Generic Digit
+derive instance genericDigit :: Generic Digit _
 
 instance showDigit :: Show Digit where
   show (Digit n) = "Digit " <> show n
@@ -38,7 +39,7 @@ fromChar c = let code = toCharCode c
                     else Nothing
 
 toChar :: Digit -> Char
-toChar (Digit c) = fromCharCode (c + 48)
+toChar (Digit c) = unsafePartial $ fromJust $ fromCharCode (c + 48)
 
 _zero :: Digit
 _zero = Digit 0
