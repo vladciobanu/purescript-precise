@@ -9,7 +9,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/purescript-contrib/purescript-hugenums.git"
+    "url": "git://github.com/purescript-contrib/purescript-precise.git"
   },
   "dependencies": {
     "purescript-arrays": "^5.0.0",
