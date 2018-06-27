@@ -2,6 +2,9 @@
 
 [![Latest release](http://img.shields.io/github/release/purescript-contrib/purescript-precise.svg)](https://github.com/purescript-contrib/purescript-precise/releases)
 [![Build status](https://travis-ci.org/purescript-contrib/purescript-precise.svg?branch=master)](https://travis-ci.org/purescript-contrib/purescript-precise)
+[![Pursuit](http://pursuit.purescript.org/packages/purescript-precise/badge)](http://pursuit.purescript.org/packages/purescript-precise/)
+[![Maintainer: garyb](https://img.shields.io/badge/maintainer-garyb-lightgrey.svg)](http://github.com/garyb)
+[![Maintainer: thomashoneyman](https://img.shields.io/badge/maintainer-thomashoneyman-lightgrey.svg)](http://github.com/thomashoneyman)
 
 This is a library for working with numbers of arbitrarily finite size.
 
@@ -45,3 +48,7 @@ bower install purescript-precise
 ## Documentation
 
 Module documentation is [published on Pursuit](https://pursuit.purescript.org/packages/purescript-precise/).
+
+## Contributing
+
+Read the [contribution guidelines](https://github.com/purescript-contrib/purescript-precise/blob/master/.github/contributing.md) to get started and see helpful related resources.
