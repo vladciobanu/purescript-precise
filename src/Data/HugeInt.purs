@@ -18,8 +18,9 @@ module Data.HugeInt
 
 import Prelude
 
-import Data.String (length, drop, takeWhile)
-import Data.Generic (class Generic)
+import Data.String (length, drop)
+import Data.String.CodeUnits (takeWhile)
+import Data.Generic.Rep (class Generic)
 import Data.Int (toNumber)
 import Data.Int (round) as Int
 import Data.Maybe (Maybe(..))
@@ -28,7 +29,7 @@ import Data.HugeNum as HN
 
 newtype HugeInt = HugeInt HugeNum
 
-derive instance genericHugeInt :: Generic HugeInt
+derive instance genericHugeInt :: Generic HugeInt _
 
 instance eqHugeInt :: Eq HugeInt where
   eq (HugeInt h1) (HugeInt h2) = h1 == h2
