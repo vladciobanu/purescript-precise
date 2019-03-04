@@ -26,7 +26,7 @@ import Data.List as L
 import Data.Digit (Digit, toInt, fromInt, fromChar, toChar, _zero, _one)
 import Data.Foldable (foldl, all, foldMap)
 import Data.Generic.Rep (class Generic)
-import Data.Int (round, odd, toNumber) as Int
+import Data.Int (odd, round) as Int
 import Data.List (List(..), (:))
 import Data.Maybe (Maybe(..), fromJust)
 import Data.String (Pattern(..), contains)
@@ -37,8 +37,6 @@ import Data.Unfoldable (replicate)
 import Effect.Exception.Unsafe (unsafeThrow)
 import Global (readFloat)
 import Partial.Unsafe (unsafePartial)
-import Test.QuickCheck.Arbitrary (class Arbitrary)
-import Test.QuickCheck.Gen (chooseInt)
 
 -- | ##Type definitions
 -- | Well-formed HugeNums are such that the decimal is a positive number less
@@ -55,12 +53,6 @@ newtype HugeNum = HugeNum { digits :: List Digit, decimal :: Int, sign :: Sign }
 
 derive instance genericSign :: Generic Sign _
 derive instance genericHugeNum :: Generic HugeNum _
-
-instance arbHugeNum :: Arbitrary HugeNum where
-  arbitrary = do
-    i <- Int.toNumber <$> chooseInt 0 1000
-    d <- Int.toNumber <$> chooseInt 0 10
-    pure $ fromNumber (i + d / 10.0)
 
 instance eqSign :: Eq Sign where
   eq Plus Plus = true
