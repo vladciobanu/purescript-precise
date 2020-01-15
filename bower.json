@@ -22,7 +22,7 @@
     "purescript-exceptions": "^4.0.0"
   },
   "devDependencies": {
-    "purescript-quickcheck": "^5.0.0",
-    "purescript-quickcheck-laws": "^4.0.0"
+    "purescript-quickcheck": "^6.1.0",
+    "purescript-quickcheck-laws": "^5.0.1"
   }
 }
