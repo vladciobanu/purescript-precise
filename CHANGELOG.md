@@ -9,6 +9,7 @@ Breaking changes (😱!!!):
 New features:
 
 Bugfixes:
+- Fixed comparing negative `HugeNum` values and `HugeInt.toInt` returning `Nothing` for negative values ([#10](https://github.com/purescript-contrib/purescript-precise/issues/10))
 
 Other improvements:
 

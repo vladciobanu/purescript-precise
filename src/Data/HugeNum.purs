@@ -102,8 +102,8 @@ compareHugeNum :: HugeNum -> HugeNum -> Ordering
 compareHugeNum x@(HugeNum r1) y@(HugeNum r2)
   | r1.sign < r2.sign = LT
   | r1.sign > r2.sign = GT
-  | r1.decimal > r2.decimal = GT
-  | r1.decimal < r2.decimal = LT
+  | r1.decimal > r2.decimal = if r1.sign == Minus then LT else GT
+  | r1.decimal < r2.decimal = if r1.sign == Minus then GT else LT
   | x == y = EQ
   | otherwise = z where
     dec = r1.decimal
