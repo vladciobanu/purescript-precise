@@ -1,5 +1,7 @@
 module Data.HugeNum
-  ( HugeNum
+  ( HugeNum (..)
+  , HugeRec
+  , Sign (..)
   , fromString
   , fromNumber
   , toNumber
@@ -13,21 +15,24 @@ module Data.HugeNum
   , isNegative
   , isPositive
   , isZero
-  , floor
-  , ceil
+  , floor , ceil
   , round
   , googol
   , pow, (^)
   , truncate
+  , divide
   ) where
 
 import Prelude
-import Data.List as L
+
+import Control.Monad.ST as ST
+import Control.Monad.ST.Ref as STR
 import Data.Digit (Digit, toInt, fromInt, fromChar, toChar, _zero, _one)
 import Data.Foldable (foldl, all, foldMap)
 import Data.Generic.Rep (class Generic)
 import Data.Int (odd, round) as Int
 import Data.List (List(..), (:))
+import Data.List as L
 import Data.Maybe (Maybe(..), fromJust)
 import Data.String (Pattern(..), contains)
 import Data.String.CodeUnits (singleton, toCharArray)
@@ -46,8 +51,8 @@ import Partial.Unsafe (unsafePartial)
 
 data Sign = Plus | Minus
 type HugeRec = { digits :: List Digit, decimal :: Int, sign :: Sign }
--- Can use type synonym when bug fixed: https://github.com/purescript/purescript/issues/1443
-newtype HugeNum = HugeNum { digits :: List Digit, decimal :: Int, sign :: Sign }
+
+newtype HugeNum = HugeNum HugeRec
 
 -- | ##Instances
 
@@ -594,20 +599,65 @@ pow r n =
          else ans
 
 infixr 8 pow as ^
-
+{--
+function divide(N, D)
+  if D = 0 then error(DivisionByZero) end
+  if D < 0 then (Q, R) := divide(N, −D); return (−Q, R) end
+  if N < 0 then
+    (Q,R) := divide(−N, D)
+    if R = 0 then return (−Q, 0)
+    else return (−Q − 1, D − R) end
+  end
+  -- At this point, N ≥ 0 and D > 0
+  return divide_unsigned(N, D)
+end
+function divide_unsigned(N, D)
+  Q := 0; R := N
+  while R ≥ D do
+    Q := Q + 1
+    R := R − D
+  end
+  return (Q, R)
+end
+--}
 -- | Division
-{-- long :: HugeNum -> HugeNum -> HugeNum --}
-{-- long num den --}
-{--   | isZero den = unsafeThrow "division by zero" --}
-{--   | num == den = oneHugeNum --}
-{--   | num < den = divProper num den --}
-{--   | otherwise = divImproper num den --}
 
-{-- divProper :: HugeNum -> HugeNum -> HugeNum --}
-{-- divProper num den = oneHugeNum --}
 
-{-- divImproper :: HugeNum -> HugeNum -> HugeNum --}
-{-- divImproper num den = oneHugeNum --}
+-- | Notes for next time:
+--
+-- 1. This is just doing subtraction so it's slow (but accurate!)
+-- 2. Benchmark the 2 'go' versions below!
+-- 3. Try to look for algorithms that make this faster
+-- 4. Look for algorithms that work on reals rather than integers
+divide :: HugeNum -> HugeNum -> Tuple HugeNum HugeNum
+divide num den
+  | isZero den =
+      unsafeThrow "division by zero"
+  | den < zero =
+      case divide num (-den) of
+          Tuple q r -> Tuple (-q) r
+  | num < zero =
+      case divide (-num) den of
+          Tuple q r
+              | r == zero -> Tuple (-q) zero
+              | otherwise -> Tuple (-q - one) (den - r)
+  | otherwise = divide_unsigned num den
 
-{-- adjustDecimalsForProper :: HugeNum -> HugeNum -> { num :: HugeNum, den :: HugeNum } --}
-{-- adjustDecimalsForProper (HugeNum h1) (HugeNum h2) = HugeNum h where --}
+divide_unsigned :: HugeNum -> HugeNum -> Tuple HugeNum HugeNum
+divide_unsigned num den = go $ Tuple zero num
+  where
+    go (Tuple q r)
+      | r >= den  = go $ Tuple (q + one) (r - den)
+      | otherwise = Tuple q r
+    -- go = ST.run do
+    --    q <- STR.new zero
+    --    r <- STR.new num
+    --    ST.while
+    --        ((_ >= den) <$> STR.read r)
+    --        do
+    --          _ <- STR.modify (_ + one) q
+    --          _ <- STR.modify (_ - den) r
+    --          pure unit
+    --    Tuple <$> STR.read q <*> STR.read r
+
+
